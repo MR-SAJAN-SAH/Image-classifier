@@ -72,3 +72,4 @@ def predict():
 
 if __name__ == "__main__":
     app.run(debug=True)
+#gunicorn -w 1 -k gthread -b 0.0.0.0:5000 app:app
