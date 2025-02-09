@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Classifier</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        input[type="file"] {
+            margin-top: 20px;
+        }
+        #result {
+            font-size: 20px;
+            margin-top: 20px;
+        }
+        #preview {
+            margin-top: 20px;
+            max-width: 300px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h2>Upload an Image for Prediction</h2>
+    <input type="file" id="imageUpload" accept="image/*">
+    <br>
+    <img id="preview">
+    <br>
+    <button onclick="uploadImage()">Predict</button>
+    <p id="result"></p>
+
+    <script>
+        function uploadImage() {
+            let fileInput = document.getElementById('imageUpload');
+            let file = fileInput.files[0];
+            if (!file) {
+                alert("Please select an image!");
+                return;
+            }
+
+            let formData = new FormData();
+            formData.append('file', file);
+
+            fetch('/predict', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    document.getElementById("result").innerText = "Error: " + data.error;
+                } else {
+                    document.getElementById("result").innerText = "Predicted Class: " + data.prediction;
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        }
+
+        document.getElementById('imageUpload').addEventListener('change', function(event) {
+            let file = event.target.files[0];
+            if (file) {
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    let preview = document.getElementById('preview');
+                    preview.src = e.target.result;
+                    preview.style.display = "block";
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+</body>
+</html>
