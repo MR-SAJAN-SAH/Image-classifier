@@ -6,32 +6,142 @@
     <title>Image Classifier</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 50px;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            background-color: #f4f4f4;
         }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+            position: fixed;
+        }
+
+        .sidebar h3 {
+            text-align: center;
+            font-size: 22px;
+            margin-bottom: 20px;
+        }
+
+        .class-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .class-list li {
+            padding: 10px;
+            font-size: 18px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Main content */
+        .main-content {
+            margin-left: 270px;
+            padding: 50px;
+            text-align: center;
+            width: 100%;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 26px;
+        }
+
         input[type="file"] {
             margin-top: 20px;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
         }
+
+        .upload-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        #preview {
+            max-width: 300px;
+            border-radius: 10px;
+            display: none;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
         #result {
             font-size: 20px;
-            margin-top: 20px;
-        }
-        #preview {
-            margin-top: 20px;
-            max-width: 300px;
+            font-weight: bold;
+            color: #222;
+            margin-left: 20px;
             display: none;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            min-width: 200px;
         }
+
+        button {
+            margin-top: 20px;
+            padding: 12px 24px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #45a049;
+            transform: scale(1.05);
+        }
+
     </style>
 </head>
 <body>
-    <h2>Upload an Image for Prediction</h2>
-    <input type="file" id="imageUpload" accept="image/*">
-    <br>
-    <img id="preview">
-    <br>
-    <button onclick="uploadImage()">Predict</button>
-    <p id="result"></p>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h3>Class Labels</h3>
+        <ul class="class-list">
+            <li>✈️ Plane</li>
+            <li>🚗 Car</li>
+            <li>🐦 Bird</li>
+            <li>🐱 Cat</li>
+            <li>🦌 Deer</li>
+            <li>🐶 Dog</li>
+            <li>🐸 Frog</li>
+            <li>🐴 Horse</li>
+            <li>🚢 Ship</li>
+            <li>🚚 Truck</li>
+        </ul>
+    </div>
+
+    <!-- Main content -->
+    <div class="main-content">
+        <h2>Upload an Image for Prediction</h2>
+        <input type="file" id="imageUpload" accept="image/*">
+        <br>
+
+        <div class="upload-container">
+            <img id="preview">
+            <p id="result"></p>
+        </div>
+
+        <br>
+        <button onclick="uploadImage()">Predict</button>
+    </div>
 
     <script>
         function uploadImage() {
@@ -51,11 +161,15 @@
             })
             .then(response => response.json())
             .then(data => {
+                let resultBox = document.getElementById("result");
                 if (data.error) {
-                    document.getElementById("result").innerText = "Error: " + data.error;
+                    resultBox.innerText = "Error: " + data.error;
+                    resultBox.style.color = "red";
                 } else {
-                    document.getElementById("result").innerText = "Predicted Class: " + data.prediction;
+                    resultBox.innerText = "Predicted Class: " + data.prediction;
+                    resultBox.style.color = "#333";
                 }
+                resultBox.style.display = "block";
             })
             .catch(error => console.error("Error:", error));
         }
@@ -73,5 +187,6 @@
             }
         });
     </script>
+
 </body>
 </html>
